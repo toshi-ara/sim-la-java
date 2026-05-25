@@ -138,17 +138,38 @@ tasks.register<Tar>("packageLinuxFull") {
 
 
 // 3. Windows: JAR + JRE + run script
-tasks.register<Zip>("packageWindowsFull") {
+tasks.register<Exec>("createJPackage") {
     dependsOn("createJLinkImage")
-    archiveFileName.set("SimLA-Windows-WithJRE.zip")
-    destinationDirectory.set(distDir)
-    from(layout.buildDirectory.dir("jlink-runtime")) { into("runtime") }
-    from(layout.buildDirectory.file("libs/SimLocalAnesthetics-minified.jar"))
+
+    val outputDir = layout.buildDirectory.dir("jpackage").get().asFile
 
     doFirst {
-        val runBat = file("${layout.buildDirectory.get()}/run.bat")
-        runBat.writeText("@echo off\nstart \"\" \"%~dp0runtime\\bin\\javaw.exe\" -jar \"%~dp0SimLocalAnesthetics-minified.jar\"")
+        if (outputDir.exists()) outputDir.deleteRecursively()
+        outputDir.mkdirs()
     }
-    from(layout.buildDirectory.file("run.bat"))
+
+    val javaHome = System.getProperty("java.home")
+    val jpackage = "$javaHome/bin/jpackage"
+
+    commandLine(
+        jpackage,
+        "--name", "SimLocalAnesthetics",
+        "--input", layout.buildDirectory.dir("libs").get().asFile.absolutePath,
+        "--main-jar", "SimLocalAnesthetics-minified.jar",
+        "--main-class", "io.github.toshiara.simla.SimLocalAnesthetics",
+        "--runtime-image", jlinkDir.get().asFile.absolutePath,
+        "--dest", outputDir.absolutePath,
+        "--type", "app-image"
+    )
+}
+
+tasks.register<Zip>("packageWindowsFull") {
+    dependsOn("createJPackage")
+    archiveFileName.set("SimLA-Windows-WithJRE.zip")
+    destinationDirectory.set(distDir)
+
+    from(layout.buildDirectory.dir("jpackage/SimLocalAnesthetics")) {
+        into(".")
+    }
 }
 
