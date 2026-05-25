@@ -33,7 +33,7 @@ jobs:
 
       - name: Build packages (Windows)
         if: matrix.platform == 'windows'
-        run: ./gradlew createJLinkImage packageWindowsFull
+        run: ./gradlew packageWindowsFull
 
       - uses: actions/upload-artifact@v4
         with:

@@ -51,9 +51,6 @@
    but it may not necessarily yield the same results as animal experiments.
     - Because drug parameter values are set with random numbers,
       the duration of drug action may differ from the original drug order.
-        - I think this frequency has decreased
-          because v1.0.0 has changed to using random numbers
-           that follow a multivariate normal distribution
     - Because the presence or absence of a response
       when stimulated is determined by random numbers,
       the number of responses repeats up and down
@@ -99,6 +96,9 @@ This program is build under Java21.
 
 
 ## ChangeLog
+### v1.0.1 (2026-5-26)
+- Change the generated file for Windows to exe.
+
 ### v1.0.0 (2026-5-23)
 - Initial release
 
