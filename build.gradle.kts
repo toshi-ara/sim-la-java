@@ -139,22 +139,30 @@ tasks.register<Tar>("packageLinuxFull") {
 
 // 3. Windows: JAR + JRE + run script
 tasks.register<Exec>("createJPackage") {
+    dependsOn("runProguard")
     dependsOn("createJLinkImage")
 
     val outputDir = layout.buildDirectory.dir("jpackage").get().asFile
+    val stagingDir = layout.buildDirectory.dir("jpackage-staging").get().asFile
 
     doFirst {
         if (outputDir.exists()) outputDir.deleteRecursively()
-        outputDir.mkdirs()
+        if (stagingDir.exists()) stagingDir.deleteRecursively()
+        stagingDir.mkdirs()
+
+        val minifiedJar = layout.buildDirectory.file("libs/SimLocalAnesthetics-minified.jar").get().asFile
+        if (minifiedJar.exists()) {
+            minifiedJar.copyTo(stagingDir.resolve(minifiedJar.name))
+        } else {
+            throw GradleException("Minified JAR not found!")
+        }
     }
 
     val javaHome = System.getProperty("java.home")
-    val jpackage = "$javaHome/bin/jpackage"
-
     commandLine(
-        jpackage,
+        "$javaHome/bin/jpackage",
         "--name", "SimLocalAnesthetics",
-        "--input", layout.buildDirectory.dir("libs").get().asFile.absolutePath,
+        "--input", stagingDir.absolutePath,
         "--main-jar", "SimLocalAnesthetics-minified.jar",
         "--main-class", "io.github.toshiara.simla.SimLocalAnesthetics",
         "--runtime-image", jlinkDir.get().asFile.absolutePath,
