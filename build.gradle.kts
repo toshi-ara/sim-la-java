@@ -7,7 +7,7 @@ plugins {
 group = "io.github.toshiara"
 val appName = "SimLocalAnesthetics"
 val version = ""
-val appVersion = "1.0.1"
+val appVersion = "1.0.2"
 
 java {
     toolchain {

@@ -83,6 +83,9 @@
 
 
 ## 変更履歴
+### v1.0.2 (2026-5-26)
+- Windows用の生成物からSimLocalAnesthesia.jarを除外
+
 ### v1.0.1 (2026-5-26)
 - Windows用の生成物をexeに変更
 

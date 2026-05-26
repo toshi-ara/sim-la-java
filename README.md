@@ -96,6 +96,9 @@ This program is build under Java21.
 
 
 ## ChangeLog
+### v1.0.2 (2026-5-26)
+- Exclude SimLocalAnesthesia.jar from the generated files for Windows
+
 ### v1.0.1 (2026-5-26)
 - Change the generated file for Windows to exe.
 
